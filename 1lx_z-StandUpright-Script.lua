@@ -2,7 +2,6 @@ if not game:IsLoaded() then
     game.Loaded:Wait()
 end
 
---//Dependencies
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -10,7 +9,6 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/wally-rblx/uwuware-ui/main/main.lua"))()
 local MaidClass = loadstring(game:HttpGet("https://raw.githubusercontent.com/Quenty/NevermoreEngine/version2/Modules/Shared/Events/Maid.lua"))()
 
---//Variables
 local Client = Players.LocalPlayer
 
 local DataFolder = Client:WaitForChild("Data")
@@ -25,7 +23,6 @@ local MainFolder = Window:AddFolder("Farm")
 local StandFolder = Window:AddFolder("Stand Farm")
 local ShopFolder = Window:AddFolder("Shop")
 local MiscFolder = Window:AddFolder("Misc")
-local CreditsFolder = Window:AddFolder("Credits")
 
 local ItemFolder = workspace.Items
 local NPCFolder = workspace:FindFirstChild("Fartinglloll") or workspace:FindFirstChild("Npcs")
@@ -40,7 +37,7 @@ local WhitelistedStands = {"dtw", "jotarosstarplatinum", "pm"}
 local WhitelistedAttributes = {"godly", "legendary", "invincible", "daemon"}
 
 local NoclipParts = {}
-local MobValues = {"Bad Gi", "Jotaro Over Heaven"}
+local MobValues = {"Bad Gi", "Jotaro Over Heaven", "Johnny Joestar",}
 local StandList = {}
 local StandBlacklist = {"CauldronBlack", "TalkingBen", "GER"}
 local QuestList = {
@@ -57,7 +54,6 @@ local QuestList = {
     ["Jungle Bandit"] = "90+",
 }
 
---//Functions
 local function AddNoclipParts(Character)
     NoclipParts = {}
     Character:WaitForChild("Head")
@@ -98,7 +94,7 @@ local function GetQuest()
         end 
     end
 
-    NPC.Done:FireServer() --get quest
+    NPC.Done:FireServer() 
 end
 
 local function Attack()
@@ -118,7 +114,7 @@ local function Attack()
             EventFolder.Summon:FireServer()
         end
         
-        if os.clock() - LastAttack < 1 then return end --lag prevention
+        if os.clock() - LastAttack < 1 then return end 
         LastAttack = os.clock()
 
         for _, Event in ipairs(EventFolder:GetChildren()) do 
@@ -182,7 +178,7 @@ end
 local function GetLair()
     if not Library.flags.LairFarm then return end
 
-    for _, NPC in ipairs(NPCFolder:GetChildren()) do --eeeeeeeeee
+    for _, NPC in ipairs(NPCFolder:GetChildren()) do 
         if not NPC:FindFirstChild("Head") then continue end
 
         local SubUI = NPC.Head:FindFirstChild("Sub")
@@ -214,7 +210,7 @@ local function OnCharacterAdded(Character)
             return SetTargetMob()
         end
 
-        if Library.flags.AutoQuest then --auto quest
+        if Library.flags.AutoQuest then 
             GetQuest()
         end
         
@@ -224,11 +220,11 @@ local function OnCharacterAdded(Character)
     CurrentMaid:GiveTask(RunService.Stepped:Connect(function()
         if not Library.flags.MobFarm then return end
 
-        for Index = 1, #NoclipParts do --noclip
+        for Index = 1, #NoclipParts do 
             NoclipParts[Index].CanCollide = false
         end
 
-        if HumanoidRootPart.RotVelocity.Magnitude >= 50 or HumanoidRootPart.Velocity.Magnitude >= 50 then --fling prevention
+        if HumanoidRootPart.RotVelocity.Magnitude >= 50 or HumanoidRootPart.Velocity.Magnitude >= 50 then 
             HumanoidRootPart.RotVelocity = Vector3.new()
             HumanoidRootPart.Velocity = Vector3.new()
         end
@@ -240,7 +236,6 @@ local function OnCharacterAdded(Character)
     RunGetItem()
 end
 
---//Init
 Client.CharacterAdded:Connect(OnCharacterAdded)
 if Client.Character then
     task.spawn(OnCharacterAdded, Client.Character)
@@ -259,11 +254,11 @@ local OldNameCall; OldNameCall = hookmetamethod(game, "__namecall", newcclosure(
     return OldNameCall(self, ...)
 end))
 
-for _, Connection in pairs(getconnections(Client.Idled)) do --anti afk
+for _, Connection in pairs(getconnections(Client.Idled)) do 
     Connection:Disable()
 end
 
-for _, QuestNPC in ipairs(NPCFolder:GetChildren()) do --Quests
+for _, QuestNPC in ipairs(NPCFolder:GetChildren()) do 
     if not QuestNPC:FindFirstChild("Head") then continue end
     local MainUI = QuestNPC.Head:FindFirstChild("Main")
     if not MainUI then continue end
@@ -297,18 +292,15 @@ for _, StandObject in ipairs(ReplicatedStorage.StandNameConvert:GetChildren()) d
     StandList[#StandList + 1] = StandObject.Name
 end
 
---//UI shit
-Window:AddBind({text = "UI Toggle", key = Enum.KeyCode.End, callback = function() Library:Close() end})
+Window:AddBind({text = "UI Toggle", key = Enum.KeyCode.RightControl, callback = function() Library:Close() end})
 
---Main Folder
 MainFolder:AddList({text = "Mob Target", flag = "Target", values = MobValues})
 MainFolder:AddList({text = "Lair Target", flag = "LairTarget", values = {"Lvl. 15", "Lvl. 40", "Lvl. 80", "Lvl. 100"}}) 
-MainFolder:AddSlider({text = "Mob Distance", flag = "MobDistance", min = -8, max = 5})
-MainFolder:AddBox({text = "Auto Farm Players", flag = "TargetPlayer"})
+MainFolder:AddSlider({text = "Mob Distance", flag = "MobDistance", min = -8, max = 8})
+MainFolder:AddBox({text = "Name Players Here", flag = "TargetPlayer"})
 
-MainFolder:AddToggle({text = "ENABLE FARM", flag = "MobFarm"})
-MainFolder:AddToggle({text = "Lair Farm", flag = "LairFarm", callback = GetLair}) --get lair quest
-MainFolder:AddToggle({text = "Item Farm", flag = "Itemfarm", callback = RunGetItem})
+MainFolder:AddToggle({text = "Enable Farm", flag = "MobFarm"})
+MainFolder:AddToggle({text = "Lair Farm", flag = "LairFarm", callback = GetLair}) 
 MainFolder:AddToggle({text = "Auto Quest", flag = "AutoQuest"})
 MainFolder:AddToggle({text = "Auto Stand Skills", flag = "StandAttack"})
 MainFolder:AddToggle({text = "Player Farm", flag = "PlayerFarm" ,callback = function(Bool)
@@ -329,7 +321,6 @@ MainFolder:AddToggle({text = "Player Farm", flag = "PlayerFarm" ,callback = func
     end 
 end})
 
---Stand Folder
 StandFolder:AddLabel({text = "Stand Selection"})
 StandFolder:AddList({text = "Stand Selector1", flag = "TargetStand1", values = StandList})
 StandFolder:AddList({text = "Stand Selector2", flag = "TargetStand2", values = StandList})
@@ -391,14 +382,12 @@ StandFolder:AddToggle({text = "Stand Farm", flag = "StandFarm", callback = funct
     end 
 end})
 
---Shop Folder
-for Index, ItemName in ipairs({"5x Roka $12500", "1x Roka $2500", "5x Arrow $17500", "$3500 1x Arrow"}) do
+for Index, ItemName in ipairs({"5x Roka $12500", "1x Roka $2500", "5x Arrow $17500", "1x Arrow $3500"}) do
     ShopFolder:AddButton({text = ItemName, callback = function()
         ReplicatedStorage.Events.BuyItem:FireServer("MerchantAU", "Option"..tostring(Index))
     end})
 end
 
---Misc Folder
 MiscFolder:AddLabel({text = "Item Drop"})
 MiscFolder:AddBox({text = "Drop Amount", callback = function(Amount)
     Amount = tonumber(Amount)
@@ -423,9 +412,4 @@ for Index = 1, 3 do
     end})
 end
 
---Credits Folder
-CreditsFolder:AddLabel({text = "1lx_z Hub"})
-CreditsFolder:AddLabel({text = "1lx_z#7588"})
-
---Load UI
 Library:Init()
